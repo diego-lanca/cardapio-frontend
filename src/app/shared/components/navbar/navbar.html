@@ -4,14 +4,14 @@
       <!-- Logo e Nome -->
       <div class="flex items-center gap-3 cursor-pointer group">
         <div
-          class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"
+          class="w-12 h-12 bg-gray-200 border-red-500 border rounded-full flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"
         >
-          <fa-icon [icon]="faMugHot" [size]="'lg'" class="text-white"></fa-icon>
+          <img src="/logos/mercio_logo_sem_fundo.png" alt="logo" style="transform: scale(0.9)" />
         </div>
         <h1
-          class="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent hidden sm:block"
+          class="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent hidden sm:block"
         >
-          Meu Pedido
+          Rotisseria do Mércio
         </h1>
       </div>
 
@@ -87,11 +87,11 @@
           <span class="hidden sm:inline">Carrinho</span>
 
           <!-- Badge de quantidade -->
-          @if (cartItems > 0) {
+          @if (cartItems() > 0) {
             <span
               class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold min-w-6 h-6 px-1.5 flex items-center justify-center rounded-full border-2 border-white"
             >
-              {{ cartItems }}
+              {{ cartItems() }}
             </span>
           }
         </button>

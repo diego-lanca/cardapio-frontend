@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { MatButtonModule } from "@angular/material/button"
 import { faMugHot, faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { CartService } from '../../../core/services/cartService';
 
 @Component({
   selector: 'app-navbar',
@@ -10,10 +11,14 @@ import { faMugHot, faCartShopping } from '@fortawesome/free-solid-svg-icons';
   styleUrl: './navbar.css'
 })
 export class Navbar {
+  private cartService = inject(CartService);
 
-  cartItems = 0;
+  // Signal readonly com os itens
+  cart = this.cartService.cart;
 
   isMobileMenuOpen = false;
+
+  cartItems = this.cartService.qtdItens;
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;

@@ -1,0 +1,24 @@
+<div class="p-6 max-w-5xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">Painel Administrativo</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="border rounded-xl p-5 shadow bg-white">
+      <h2 class="text-xl font-semibold mb-3">Produtos</h2>
+      <button class="btn" [routerLink]="['/admin/itens']">Listar</button>
+      <button class="btn mt-2" [routerLink]="['/admin/itens/add']">Adicionar</button>
+    </div>
+
+    <div class="border rounded-xl p-5 shadow bg-white">
+      <h2 class="text-xl font-semibold mb-3">Categorias</h2>
+      <button class="btn" [routerLink]="['/admin/categories']">Listar</button>
+      <button class="btn mt-2" [routerLink]="['/admin/categories/add']">Adicionar</button>
+    </div>
+
+    <div class="border rounded-xl p-5 shadow bg-white">
+      <h2 class="text-xl font-semibold mb-3">Usuários</h2>
+      <button class="btn" [routerLink]="['/admin/users']">Listar</button>
+    </div>
+
+  </div>
+</div>

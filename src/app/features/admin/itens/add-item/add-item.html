@@ -1,0 +1,92 @@
+<div class="min-h-screen bg-gray-50 p-8">
+  <div class="border border-gray-200 rounded-lg flex flex-col gap-6">
+    <section class="bg-red-100 flex p-4 px-6 items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div
+          class="p-4 items-center justify-center bg-linear-to-r from-red-600 to-red-400 rounded-lg"
+        >
+          <fa-icon [icon]="faAdd" class="text-white font-bold"></fa-icon>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold">Informações do Produto</h1>
+          <h2 class="text-sm opacity-85">Preencha os detalhes abaixo</h2>
+        </div>
+      </div>
+      <fa-icon [icon]="faClose"></fa-icon>
+    </section>
+    <div class="p-4">
+      <form action="">
+        <!-- Header da Informação Básica -->
+        <div class="flex gap-1 pb-4 items-center">
+          <fa-icon [icon]="faInfoCircle" class="text-red-500" size="lg"></fa-icon>
+          <h1 class="font-bold text-lg">Informação Básica</h1>
+        </div>
+
+        <!-- Campos informação básica -->
+        <section>
+          <div class="flex flex-col md:flex-row w-full gap-4">
+            <div class="w-full md:w-1/2">
+              <h1>Nome do Produto *</h1>
+              <mat-form-field class="w-full">
+                <input matInput placeholder="ex.: Frango assado" required/>
+              </mat-form-field>
+            </div>
+            <div class="w-full md:w-1/2">
+              <h1>Categoria *</h1>
+              <mat-form-field class="w-full">
+                <input matInput placeholder="ex.: Assados" required/>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="w-full">
+            <h1>Descrição</h1>
+            <mat-form-field class="w-full">
+              <textarea matInput placeholder="Descreva seu produto..."> </textarea>
+            </mat-form-field>
+          </div>
+        </section>
+
+        <!-- Header da Informação Básica -->
+        <div class="flex gap-1 pb-4 items-center">
+          <fa-icon [icon]="faUsd" class="text-red-500" size="lg"></fa-icon>
+          <h1 class="font-bold text-lg">Preço & Status</h1>
+        </div>
+
+        <!-- Campos informação básica -->
+        <section>
+          <div class="w-full">
+            <h1>Preço</h1>
+            <mat-form-field class="w-full">
+              <div class="flex gap-2">
+                R$
+                <input matInput inputmode="decimal" placeholder="0,00" required/>
+              </div>
+            </mat-form-field>
+          </div>
+        </section>
+
+        <!-- Header da Informação Básica -->
+        <div class="flex gap-1 pb-4 items-center">
+          <fa-icon [icon]="faImage" class="text-red-500" size="lg"></fa-icon>
+          <h1 class="font-bold text-lg">Imagem do Produto</h1>
+        </div>
+
+        <!-- Campos informação básica -->
+        <section class="flex flex-col gap-4">
+          <div class="w-full border p-4">
+            <input type="file" (change)="onFileSelected($event)" #fileUpload />
+          </div>
+
+          <div class="flex items-center gap-4">
+            <h1>Status do Item</h1>
+            <mat-slide-toggle [checked]="activeItem"></mat-slide-toggle>
+          </div>
+        </section>
+
+        <div class="w-full flex justify-end items-center">
+            <button mat-button type="submit">Adicionar Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

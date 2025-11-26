@@ -1,0 +1,124 @@
+<div class="p-6 min-w-[400px]">
+  <div class="text-center mb-6">
+    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full mb-4 shadow-lg shadow-purple-500/30">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+    </div>
+    <h2 mat-dialog-title class="text-3xl font-bold text-gray-800 mb-2">
+      @if (isLogin()) {
+        Bem-vindo de Volta!
+      } @else {
+        Criar Conta
+      }
+    </h2>
+    <p class="text-gray-600 text-sm">
+      @if (isLogin()) {
+        Entre para acessar seu cardápio favorito
+      } @else {
+        Cadastre-se para fazer seus pedidos
+      }
+    </p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-lg">
+    <button 
+      type="button"
+      (click)="isLogin.set(true)" 
+      [class]="isLogin() ? 'flex-1 py-2.5 rounded-md font-semibold transition-all bg-white text-purple-600 shadow-sm' : 'flex-1 py-2.5 rounded-md font-semibold transition-all text-gray-600 hover:text-gray-800'">
+      Entrar
+    </button>
+    <button 
+      type="button"
+      (click)="isLogin.set(false)" 
+      [class]="!isLogin() ? 'flex-1 py-2.5 rounded-md font-semibold transition-all bg-white text-purple-600 shadow-sm' : 'flex-1 py-2.5 rounded-md font-semibold transition-all text-gray-600 hover:text-gray-800'">
+      Registrar
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Login Form -->
+    @if (isLogin()) {
+      <form [formGroup]="loginForm" class="flex flex-col gap-5">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Usuário</mat-label>
+          <input matInput formControlName="username" placeholder="Digite seu usuário" />
+          <mat-icon matPrefix class="text-gray-400 mr-2">person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Senha</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Digite sua senha" />
+          <mat-icon matPrefix class="text-gray-400 mr-2">lock</mat-icon>
+        </mat-form-field>
+
+        @if (loginError()) {
+          <div class="flex items-center gap-2 p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm animate-shake">
+            <mat-icon class="text-xl">error_outline</mat-icon>
+            <span>{{ loginError() }}</span>
+          </div>
+        }
+      </form>
+    }
+
+    <!-- Register Form -->
+    @if (!isLogin()) {
+      <form [formGroup]="registerForm" class="flex flex-col gap-5">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nome Completo</mat-label>
+          <input matInput formControlName="full_name" placeholder="Digite seu nome" />
+          <mat-icon matPrefix class="text-gray-400 mr-2">badge</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>E-mail</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="seu@email.com" />
+          <mat-icon matPrefix class="text-gray-400 mr-2">email</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Usuário</mat-label>
+          <input matInput formControlName="username" placeholder="Escolha um usuário" />
+          <mat-icon matPrefix class="text-gray-400 mr-2">person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Senha</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Mínimo 6 caracteres" />
+          <mat-icon matPrefix class="text-gray-400 mr-2">lock</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Confirmar Senha</mat-label>
+          <input matInput type="password" formControlName="confirmPassword" placeholder="Digite a senha novamente" />
+          <mat-icon matPrefix class="text-gray-400 mr-2">lock</mat-icon>
+        </mat-form-field>
+
+        @if (registerError()) {
+          <div class="flex items-center gap-2 p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm animate-shake">
+            <mat-icon class="text-xl">error_outline</mat-icon>
+            <span>{{ registerError() }}</span>
+          </div>
+        }
+      </form>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="mt-8 p-0 flex gap-3 justify-end">
+    <button mat-stroked-button (click)="dialogRef.close()" [disabled]="loading()" class="px-6 h-11 rounded-lg font-medium hover:bg-gray-50 transition-all">
+      Cancelar
+    </button>
+
+    <button mat-flat-button color="primary" [disabled]="loading() || (isLogin() ? loginForm.invalid : registerForm.invalid)" (click)="submit()" class="px-8 h-11 rounded-lg font-semibold bg-gradient-to-r from-purple-500 to-purple-700 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:translate-y-0 flex items-center gap-2">
+      @if (!loading()) {
+        <div class="flex items-center">
+            <span>{{ isLogin() ? 'Entrar' : 'Criar Conta' }}</span>
+            <mat-icon class="text-xl">{{ isLogin() ? 'arrow_forward' : 'person_add' }}</mat-icon>
+        </div>
+      } @else {
+        <mat-spinner diameter="20"></mat-spinner>
+      }
+    </button>
+  </mat-dialog-actions>
+</div>

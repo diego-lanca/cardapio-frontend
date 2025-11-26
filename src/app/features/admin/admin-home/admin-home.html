@@ -1,24 +1,139 @@
-<div class="p-6 max-w-5xl mx-auto">
-  <h1 class="text-3xl font-bold mb-6">Painel Administrativo</h1>
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-    <div class="border rounded-xl p-5 shadow bg-white">
-      <h2 class="text-xl font-semibold mb-3">Produtos</h2>
-      <button class="btn" [routerLink]="['/admin/itens']">Listar</button>
-      <button class="btn mt-2" [routerLink]="['/admin/itens/add']">Adicionar</button>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
+          <fa-icon [icon]="faTachographDigital" class="text-white text-2xl"></fa-icon>
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800">Painel Administrativo</h1>
+          <p class="text-gray-600 text-sm">Gerencie seu cardápio e usuários</p>
+        </div>
+      </div>
     </div>
 
-    <div class="border rounded-xl p-5 shadow bg-white">
-      <h2 class="text-xl font-semibold mb-3">Categorias</h2>
-      <button class="btn" [routerLink]="['/admin/categories']">Listar</button>
-      <button class="btn mt-2" [routerLink]="['/admin/categories/add']">Adicionar</button>
+    <!-- Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Card Produtos -->
+      <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6">
+          <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4">
+            <fa-icon [icon]="faUtensils" class="text-white text-2xl"></fa-icon>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">Produtos</h2>
+          <p class="text-blue-100 text-sm">Gerencie itens do cardápio</p>
+        </div>
+        
+        <div class="p-6 space-y-3">
+          <button 
+            [routerLink]="['/admin/itens']"
+            class="w-full flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-500 hover:to-blue-600 text-blue-700 hover:text-white rounded-xl font-semibold transition-all duration-300 group/btn shadow-sm hover:shadow-md">
+            <span class="flex items-center gap-2">
+              <fa-icon [icon]="faList" class="text-2xl"></fa-icon>
+              Listar Produtos
+            </span>
+            <fa-icon [icon]="faChevronRight" class=""></fa-icon>
+          </button>
+
+          <button 
+            [routerLink]="['/admin/itens/add']"
+            class="w-full flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-500 hover:to-green-600 text-green-700 hover:text-white rounded-xl font-semibold transition-all duration-300 group/btn shadow-sm hover:shadow-md">
+            <span class="flex items-center gap-2">
+              <fa-icon [icon]="faPlus" class="text-2xl"></fa-icon>
+              Adicionar Produto
+            </span>
+            <fa-icon [icon]="faChevronRight" class=""></fa-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card Usuários -->
+      <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-6">
+          <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4">
+            <fa-icon [icon]="faUsers" class="text-white text-2xl"></fa-icon>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">Usuários</h2>
+          <p class="text-purple-100 text-sm">Administre usuários do sistema</p>
+        </div>
+        
+        <div class="p-6 space-y-3">
+          <button 
+            [routerLink]="['/admin/users']"
+            class="w-full flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-purple-50 to-purple-100 hover:from-purple-500 hover:to-purple-600 text-purple-700 hover:text-white rounded-xl font-semibold transition-all duration-300 group/btn shadow-sm hover:shadow-md">
+            <span class="flex items-center gap-2">
+              <fa-icon [icon]="faList" class="text-2xl"></fa-icon>
+              Listar Usuários
+            </span>
+            <fa-icon [icon]="faChevronRight" class=""></fa-icon>
+          </button>
+
+          <div class="px-5 py-3.5 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 text-center">
+            <p class="text-gray-500 text-sm font-medium">Mais opções em breve</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Estatísticas (Placeholder para futuro) -->
+      <!-- <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-amber-500 to-amber-600 p-6">
+          <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4">
+            <fa-icon [icon]="faUtensils" class="text-white text-2xl"></fa-icon>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">Estatísticas</h2>
+          <p class="text-amber-100 text-sm">Visualize métricas e dados</p>
+        </div>
+        
+        <div class="p-6 space-y-3">
+          <div class="px-5 py-8 bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl border-2 border-dashed border-amber-200 text-center">
+            <fa-icon [icon]="faUtensils" class="text-white text-2xl"></fa-icon>
+            <p class="text-amber-700 font-semibold mb-1">Em Desenvolvimento</p>
+            <p class="text-amber-600 text-xs">Funcionalidade em breve</p>
+          </div>
+        </div>
+      </div> -->
+
     </div>
 
-    <div class="border rounded-xl p-5 shadow bg-white">
-      <h2 class="text-xl font-semibold mb-3">Usuários</h2>
-      <button class="btn" [routerLink]="['/admin/users']">Listar</button>
-    </div>
+    <!-- Quick Stats -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white rounded-xl p-5 shadow-md border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Total de Produtos</p>
+            <p class="text-3xl font-bold text-gray-800 mt-1">{{ totalItems }}</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <fa-icon [icon]="faBox" class="text-blue-400 text-2xl"></fa-icon>
+          </div>
+        </div>
+      </div>
 
+      <div class="bg-white rounded-xl p-5 shadow-md border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Usuários Ativos</p>
+            <p class="text-3xl font-bold text-gray-800 mt-1">{{activeUsers}}</p>
+          </div>
+          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+            <fa-icon [icon]="faUserCheck" class="text-purple-400 text-2xl"></fa-icon>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl p-5 shadow-md border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Total de Pedidos</p>
+            <p class="text-3xl font-bold text-gray-800 mt-1">{{orderCount}}</p>
+          </div>
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <fa-icon [icon]="faBell" class="text-green-400 text-2xl"></fa-icon>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

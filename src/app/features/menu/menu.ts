@@ -1,4 +1,4 @@
-import { Component, LOCALE_ID, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit, PLATFORM_ID, OnDestroy } from '@angular/core';
 import {
   faBurger,
   faUtensils,
@@ -9,18 +9,25 @@ import {
   faMugHot,
 } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { CurrencyPipe, registerLocaleData } from '@angular/common';
+import { CurrencyPipe, registerLocaleData, CommonModule } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { MenuItem } from '../../shared/models/menuItem';
 import { MenuSection } from '../../shared/models/menuSection';
-import { CartService } from '../../core/services/cartService';
+import { CartService } from '../../core/services/cart-service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ItemService } from '../../core/services/item-service';
+import { ChangeDetectorRef } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { ItemDetails } from '../../shared/components/item-details/item-details';
 
 registerLocaleData(localePt);
 
 @Component({
   selector: 'app-menu',
-  imports: [FaIconComponent, CurrencyPipe],
+  imports: [FaIconComponent, CurrencyPipe, MatProgressSpinnerModule, CommonModule],
   providers: [
     {
       provide: LOCALE_ID,
@@ -30,133 +37,12 @@ registerLocaleData(localePt);
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
-export class Menu implements OnInit {
-  items: MenuItem[] = [
-    {
-      id: 1,
-      name: 'Frango Assado com Batata',
-      description: 'Frango assado no forno acompanhado de batatas douradas',
-      price: 45.0,
-      category: 'Assados',
-      image: '/menu/frango-assado.jpg',
-    },
-    {
-      id: 2,
-      name: 'Pernil Assado',
-      description: 'Pernil suíno assado lentamente e temperado',
-      price: 48.0,
-      category: 'Assados',
-      image: '/menu/pernil.jpg',
-    },
-    {
-      id: 3,
-      name: 'Joelho Suíno',
-      description: 'Joelho suíno assado, crocante e suculento',
-      price: 42.0,
-      category: 'Assados',
-      image: '/menu/joelho.jpg',
-    },
-    {
-      id: 4,
-      name: 'Costela Assada',
-      description: 'Costela bovina assada no forno, macia e saborosa',
-      price: 52.0,
-      category: 'Assados',
-      image: '/menu/costela.jpg',
-    },
-    {
-      id: 5,
-      name: 'Inhoque',
-      description: 'Inhoque caseiro ao molho de tomate',
-      price: 22.0,
-      category: 'Massas',
-      image: '/menu/innoque.jpg',
-    },
-    {
-      id: 6,
-      name: 'Maionese Caseira',
-      description: 'Maionese de batata tradicional da casa',
-      price: 18.0,
-      category: 'Acompanhamentos',
-      image: '/menu/maionese.jpg',
-    },
-    {
-      id: 7,
-      name: 'Copa Lombo',
-      description: 'Copa lombo suíno assado e temperado',
-      price: 44.0,
-      category: 'Assados',
-      image: '/menu/copa-lombo.jpg',
-    },
-    {
-      id: 8,
-      name: 'Feijoada',
-      description: 'Feijoada completa com carnes selecionadas',
-      price: 28.0,
-      category: 'Pratos do Dia',
-      image: '/menu/feijoada.jpg',
-    },
-    {
-      id: 9,
-      name: 'Cuscuz Paulista',
-      description: 'Cuscuz paulista tradicional com frango e legumes',
-      price: 20.0,
-      category: 'Pratos do Dia',
-      image: '/menu/cuscuz.jpg',
-    },
-    {
-      id: 10,
-      name: 'Caldo de Mandioca com Costela',
-      description: 'Caldo cremoso de mandioca com costela bovina',
-      price: 18.0,
-      category: 'Caldos',
-      image: '/menu/caldo-mandioca.jpg',
-    },
-    {
-      id: 11,
-      name: 'Parmegiana',
-      description: 'Filé à parmegiana com molho de tomate e queijo',
-      price: 36.0,
-      category: 'Pratos Principais',
-      image: '/menu/parmegiana.jpg',
-    },
-    {
-      id: 12,
-      name: 'Filé de Tilápia Frito',
-      description: 'Tilápia frita crocante e temperada',
-      price: 32.0,
-      category: 'Porções',
-      image: '/menu/tilapia.jpg',
-    },
-    {
-      id: 13,
-      name: 'Galinhada',
-      description: 'Arroz com frango temperado e açafrão',
-      price: 24.0,
-      category: 'Pratos do Dia',
-      image: '/menu/galinhada.jpg',
-    },
-    {
-      id: 14,
-      name: 'Dobradinha',
-      description: 'Dobradinha tradicional com grão-de-bico',
-      price: 26.0,
-      category: 'Pratos do Dia',
-      image: '/menu/dobradinha.jpg',
-    },
-    {
-      id: 15,
-      name: 'Torresmo',
-      description: 'Torresmo crocante preparado na hora',
-      price: 14.0,
-      category: 'Porções',
-      image: '/menu/torresmo.jpg',
-    },
-  ];
-
+export class Menu implements OnInit, OnDestroy {
+  items: MenuItem[] = [];
   sections: MenuSection[] = [];
+  loading: boolean = true;
+  private destroy$ = new Subject<void>();
 
-  // Mapa de ícones e cores por categoria
   private categoryConfig: {
     [key: string]: { icon: any; color: string };
   } = {
@@ -167,49 +53,114 @@ export class Menu implements OnInit {
     Caldos: { icon: faMugHot, color: '#f97316' },
     'Pratos Principais': { icon: faBurger, color: '#f59e0b' },
     Porções: { icon: faUtensils, color: '#a78bfa' },
-
     Default: { icon: faUtensils, color: '#6b7280' },
   };
 
   constructor(
     private cartService: CartService,
+    private itemService: ItemService,
     private snackbar: MatSnackBar,
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
 
-  addProduct(product: MenuItem) {
+  addQuickItem(event: Event, item: MenuItem) {
+    event.stopPropagation();
     this.cartService.addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      qty: 1
     });
+    this.snackbar.open('Produto adicionado ao carrinho!', 'Fechar', { duration: 2000 });
+  }
 
+  addItemWithQuantity(item: MenuItem, qty: number) {
+    this.cartService.addToCart({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      qty,
+    });
     this.snackbar.open('Produto adicionado ao carrinho!', 'Fechar', { duration: 2000 });
   }
 
   ngOnInit() {
-    this.groupItemsByCategory();
+    this.loadItems();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  openItemDetailsDialog(item: any, section: any): void {
+    const dialogRef = this.dialog.open(ItemDetails, {
+      width: '600px',
+      maxWidth: '95vw',
+      data: {
+        item: item,
+        sectionColor: section.color,
+        sectionIcon: section.icon,
+      },
+      panelClass: 'product-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.addItemWithQuantity(result.item, result.quantity);
+      }
+    });
   }
 
   scrollToSection(section: any) {
     const id = section.name.toLowerCase().replace(/ /g, '-');
     const el = document.getElementById(id);
-
     if (!el) return;
 
-    // Altura da navbar fixa
     const navbar = document.getElementById('mini-navbar');
-    const offset = navbar ? navbar.offsetHeight + 10 : 60; // fallback
-
+    const offset = navbar ? navbar.offsetHeight + 10 : 60;
     const top = el.getBoundingClientRect().top + window.scrollY - offset;
-
     window.scrollTo({
       top,
       behavior: 'smooth',
     });
   }
 
+  private loadItems() {
+    this.sections = [];
+    this.loading = true;
+    this.cdr.markForCheck();
+
+    this.itemService
+      .getAll()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (items) => {
+          if (!items || items.length === 0) {
+            this.loading = false;
+            this.cdr.markForCheck();
+            return;
+          }
+
+          this.items = items;
+          this.groupItemsByCategory();
+          this.loading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Erro ao carregar itens:', err);
+          this.loading = false;
+          this.sections = [];
+          this.cdr.markForCheck();
+          this.snackbar.open('Ocorreu um erro ao carregar os produtos.', 'Fechar', {
+            duration: 3000,
+          });
+        },
+      });
+  }
+
   private groupItemsByCategory() {
-    // Agrupa itens por categoria
     const grouped = this.items.reduce(
       (acc, item) => {
         if (!acc[item.category]) {
@@ -221,7 +172,6 @@ export class Menu implements OnInit {
       {} as { [key: string]: MenuItem[] },
     );
 
-    // Converte para array das seções separadas
     this.sections = Object.entries(grouped).map(([cn, i]) => {
       const config = this.categoryConfig[cn] || this.categoryConfig['Default'];
       return {
@@ -231,5 +181,7 @@ export class Menu implements OnInit {
         items: i,
       };
     });
+
+    this.cdr.markForCheck();
   }
 }

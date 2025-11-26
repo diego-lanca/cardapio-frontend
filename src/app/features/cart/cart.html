@@ -1,0 +1,206 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <div class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center gap-3">
+        <button
+          (click)="continueShopping()"
+          class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          <span class="text-sm font-medium">Voltar</span>
+        </button>
+        <h1 class="text-2xl font-bold text-gray-900">Meu Carrinho</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    @if (isEmpty()) {
+      <!-- Carrinho Vazio -->
+      <div class="bg-white rounded-lg shadow-sm p-12 text-center">
+        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+          />
+        </svg>
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">Seu carrinho está vazio</h2>
+        <p class="text-gray-600 mb-6">Que tal adicionar alguns produtos deliciosos?</p>
+        <button
+          (click)="continueShopping()"
+          class="inline-block bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-8 rounded-lg transition-colors"
+        >
+          Voltar ao Menu
+        </button>
+      </div>
+    } @else {
+      <!-- Carrinho com Itens -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Lista de Itens -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <!-- Header da Tabela -->
+            <div class="bg-gray-50 px-6 py-4 border-b">
+              <div class="grid grid-cols-12 gap-4 items-center text-sm font-semibold text-gray-900">
+                <div class="col-span-5">Produto</div>
+                <div class="col-span-2 text-center">Preço</div>
+                <div class="col-span-2 text-center">Qtd</div>
+                <div class="col-span-2 text-right">Total</div>
+                <div class="col-span-1"></div>
+              </div>
+            </div>
+
+            <!-- Itens -->
+            <div class="divide-y">
+              @for (item of cart(); track item.id) {
+                <div class="px-6 py-4 hover:bg-gray-50 transition">
+                  <div class="grid grid-cols-12 gap-4 items-center">
+                    <!-- Produto -->
+                    <div class="col-span-5">
+                      <h3 class="font-medium text-gray-900">{{ item.name }}</h3>
+                      <p class="text-sm text-gray-500 mt-1">ID: {{ item.id }}</p>
+                    </div>
+
+                    <!-- Preço Unitário -->
+                    <div class="col-span-2 text-center">
+                      <p class="text-sm font-medium text-gray-900">
+                        {{ item.price | currency: 'BRL' }}
+                      </p>
+                    </div>
+
+                    <!-- Quantidade -->
+                    <div class="col-span-2 flex justify-center">
+                      <div class="flex items-center gap-2">
+                        <button
+                          (click)="decrementQuantity(item.id)"
+                          class="p-1 hover:bg-gray-200 rounded transition"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M20 12H4"
+                            />
+                          </svg>
+                        </button>
+                        <input
+                          type="number"
+                          [value]="item.qty"
+                          (change)="updateQuantity(item.id, $event)"
+                          class="w-12 text-center border border-gray-300 rounded py-1 text-sm"
+                          min="1"
+                        />
+                        <button
+                          (click)="incrementQuantity(item.id)"
+                          class="p-1 hover:bg-gray-200 rounded transition"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 4v16m8-8H4"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Total Item -->
+                    <div class="col-span-2 text-right">
+                      <p class="font-semibold text-gray-900">
+                        {{ (item.price * item.qty) | currency: 'BRL' }}
+                      </p>
+                    </div>
+
+                    <!-- Botão Remover -->
+                    <div class="col-span-1 flex justify-end">
+                      <button
+                        (click)="removeItem(item.id)"
+                        class="text-red-600 hover:text-red-700 transition"
+                      >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Botão Limpar Carrinho -->
+          <div class="mt-4">
+            <button
+              (click)="clearCart()"
+              class="text-red-600 hover:text-red-700 text-sm font-medium transition"
+            >
+              Limpar Carrinho
+            </button>
+          </div>
+        </div>
+
+        <!-- Resumo do Pedido -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-sm p-6 sticky top-20">
+            <h2 class="text-lg font-bold text-gray-900 mb-4">Resumo do Pedido</h2>
+
+            <!-- Detalhes -->
+            <div class="space-y-3 mb-6 pb-6 border-b">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Subtotal</span>
+                <span class="font-medium text-gray-900">{{ total() | currency: 'BRL' }}</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Quantidade de itens</span>
+                <span class="font-medium text-gray-900">{{ qtdItens() }}</span>
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="mb-6 pb-6 border-b">
+              <div class="flex justify-between">
+                <span class="font-semibold text-gray-900">Total</span>
+                <span class="text-2xl font-bold text-red-600">{{ total() | currency: 'BRL' }}</span>
+              </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="space-y-3">
+              <button
+                (click)="checkout()"
+                class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+              >
+                Finalizar Compra
+              </button>
+              <button
+                (click)="continueShopping()"
+                class="w-full border border-gray-300 hover:border-gray-400 text-gray-900 font-semibold py-3 px-4 rounded-lg transition-colors"
+              >
+                Continuar Comprando
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

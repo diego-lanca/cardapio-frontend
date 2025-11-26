@@ -1,0 +1,62 @@
+/* Estilos gerais */
+::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+input[type='number']:focus {
+  outline: none;
+  border-color: rgb(220, 38, 38);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Animações suaves */
+@media (prefers-reduced-motion: no-preference) {
+  button,
+  input {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sticky {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid.grid-cols-12 {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .col-span-5,
+  .col-span-2,
+  .col-span-1 {
+    grid-column: span 1;
+  }
+
+  .text-center {
+    text-align: left;
+  }
+
+  .text-right {
+    text-align: left;
+  }
+
+  .flex-col-reverse {
+    flex-direction: column-reverse;
+  }
+}

@@ -4,14 +4,19 @@ import { effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 type StorageType = 'localStorage' | 'sessionStorage';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageService {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  private authTokenSignal = signal<string | null>(this.getItem('auth_token', 'localStorage'));
-  private cartSignal = signal<any[]>(this.getItem('cart', 'localStorage') || []);
+  private authTokenSignal = signal<string | null>(
+    this.isBrowser ? this.getItem('auth_token', 'localStorage') : null,
+  );
+
+  private cartSignal = signal<any[]>(
+    this.isBrowser ? this.getItem('cart', 'localStorage') || [] : [],
+  );
 
   authToken = this.authTokenSignal.asReadonly();
   cart = this.cartSignal.asReadonly();
@@ -54,7 +59,7 @@ export class StorageService {
 
     try {
       const storage = type === 'localStorage' ? localStorage : sessionStorage;
-      
+
       if (value === null || value === undefined) {
         storage.removeItem(key);
       } else {

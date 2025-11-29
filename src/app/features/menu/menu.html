@@ -2,7 +2,7 @@
   <!-- Mini Navbar Fixa -->
   <div class="sticky top-0 z-50 bg-white shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-4 py-2 flex gap-3 overflow-x-auto no-scrollbar">
-      @for (section of sections; track section.name) {
+      @for (section of filteredSections; track section.name) {
         <button
           class="px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap border border-gray-200 hover:bg-gray-100 transition"
           (click)="scrollToSection(section)"
@@ -13,6 +13,17 @@
     </div>
   </div>
 
+  <!-- Campo de Busca -->
+  <div class="max-w-7xl mx-auto px-4 py-4 sticky top-[52px] z-40 bg-gray-50">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="filterItems()"
+      placeholder="Buscar produtos..."
+      class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+    />
+  </div>
+
   <!-- Indicador de Carregamento -->
   @if (loading) {
     <div class="flex items-center justify-center min-h-screen">
@@ -21,7 +32,7 @@
         <p class="mt-4 text-gray-600">Carregando produtos...</p>
       </div>
     </div>
-  } @else if (sections.length === 0) {
+  } @else if (filteredSections.length === 0) {
     <!-- Mensagem quando não há produtos -->
     <div class="max-w-7xl mx-auto px-4 py-12">
       <div class="text-center">
@@ -31,7 +42,7 @@
   } @else {
     <!-- Conteúdo dos produtos -->
     <div class="max-w-7xl mx-auto px-4 py-6">
-      @for (section of sections; track section.name) {
+      @for (section of filteredSections; track section.name) {
         <div class="mb-10" [id]="section.name.toLowerCase().replaceAll(' ', '-')">
           <!-- Header da Seção -->
           <div class="flex items-center gap-3 mb-5 pb-3 border-b-2 border-gray-200">
@@ -55,7 +66,7 @@
               <div
                 class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer group"
                 (click)="openItemDetailsDialog(item, section)"
-                >
+              >
                 <!-- Imagem -->
                 <div
                   class="relative h-40 bg-gradient-to-br overflow-hidden"
@@ -72,7 +83,7 @@
                   ></div>
                   <!-- Placeholder para imagem -->
                   <div class="w-full h-full flex items-center justify-center">
-                    @if (!item.image) {
+                    @if (!item.image_url || item.image_url.length < 5) {
                       <svg
                         class="w-16 h-16 text-white opacity-50"
                         fill="none"
@@ -87,7 +98,11 @@
                         />
                       </svg>
                     } @else {
-                      <img [src]="item.image" alt="" />
+                      <img
+                        [src]="item.image_url"
+                        [alt]="item.name"
+                        class="w-full h-full object-cover"
+                      />
                     }
                   </div>
                 </div>

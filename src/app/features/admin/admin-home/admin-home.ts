@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -54,6 +54,7 @@ export class AdminHome implements OnInit {
     private itemService: ItemService,
     private userService: UserService,
     private orderService: OrderService,
+    private cdk: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +71,8 @@ export class AdminHome implements OnInit {
     this.totalItems = totalItems.length;
     this.activeUsers = activeUsers.length;
     this.orderCount = orders.length;
+
+    this.cdk.markForCheck();
   }
 
   async getTotalItems(): Promise<MenuItem[]> {

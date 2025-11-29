@@ -7,6 +7,7 @@ import {
   faCarrot,
   faConciergeBell,
   faMugHot,
+  faWineGlass
 } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { CurrencyPipe, registerLocaleData, CommonModule } from '@angular/common';
@@ -22,12 +23,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ItemDetails } from '../../shared/components/item-details/item-details';
+import { FormsModule } from '@angular/forms';
 
 registerLocaleData(localePt);
 
 @Component({
   selector: 'app-menu',
-  imports: [FaIconComponent, CurrencyPipe, MatProgressSpinnerModule, CommonModule],
+  imports: [FaIconComponent, CurrencyPipe, MatProgressSpinnerModule, CommonModule, FormsModule],
   providers: [
     {
       provide: LOCALE_ID,
@@ -40,6 +42,9 @@ registerLocaleData(localePt);
 export class Menu implements OnInit, OnDestroy {
   items: MenuItem[] = [];
   sections: MenuSection[] = [];
+  searchTerm: string = '';
+  filteredSections: MenuSection[] = [];
+
   loading: boolean = true;
   private destroy$ = new Subject<void>();
 
@@ -53,6 +58,7 @@ export class Menu implements OnInit, OnDestroy {
     Caldos: { icon: faMugHot, color: '#f97316' },
     'Pratos Principais': { icon: faBurger, color: '#f59e0b' },
     Porções: { icon: faUtensils, color: '#a78bfa' },
+    Bebidas: { icon: faWineGlass, color: '#8BE4FAFF' },
     Default: { icon: faUtensils, color: '#6b7280' },
   };
 
@@ -70,7 +76,8 @@ export class Menu implements OnInit, OnDestroy {
       id: item.id,
       name: item.name,
       price: item.price,
-      qty: 1
+      observation: '',
+      qty: 1,
     });
     this.snackbar.open('Produto adicionado ao carrinho!', 'Fechar', { duration: 2000 });
   }
@@ -80,6 +87,7 @@ export class Menu implements OnInit, OnDestroy {
       id: item.id,
       name: item.name,
       price: item.price,
+      observation: '',
       qty,
     });
     this.snackbar.open('Produto adicionado ao carrinho!', 'Fechar', { duration: 2000 });
@@ -182,6 +190,28 @@ export class Menu implements OnInit, OnDestroy {
       };
     });
 
+    this.filteredSections = this.sections;
+
     this.cdr.markForCheck();
+  }
+
+  filterItems() {
+    if (!this.searchTerm.trim()) {
+      this.filteredSections = this.sections;
+      return;
+    }
+
+    const term = this.searchTerm.toLowerCase();
+
+    this.filteredSections = this.sections
+      .map((section) => ({
+        ...section,
+        items: section.items.filter(
+          (item) =>
+            item.name.toLowerCase().includes(term) ||
+            item.description?.toLowerCase().includes(term),
+        ),
+      }))
+      .filter((section) => section.items.length > 0); // remove seções vazias
   }
 }

@@ -19,7 +19,7 @@ export class AuthService {
   user = this.userSignal.asReadonly();
   
   isAuthenticated = computed(() => !!this.storageService.authToken());
-  isAdmin = computed(() => this.user()?.isAdmin);
+  isAdmin = computed(() => this.user()?.is_admin);
 
   constructor() {
     // Carrega o usuário se houver token

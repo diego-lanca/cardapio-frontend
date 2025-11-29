@@ -16,7 +16,7 @@
     "
   >
     <div class="w-full h-full flex items-center justify-center">
-      @if (!data.item.image) {
+      @if (!data.item.image_url) {
         <svg
           class="w-24 h-24 text-white opacity-50"
           fill="none"
@@ -31,7 +31,7 @@
           />
         </svg>
       } @else {
-        <img [src]="data.item.image" [alt]="data.item.name" class="w-full h-full object-cover" />
+        <img [src]="data.item.image_url" [alt]="data.item.name" class="w-full h-full object-cover" />
       }
     </div>
   </div>

@@ -16,6 +16,7 @@ import {
 import { ItemService } from '../../../../core/services/item-service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
+import { MenuItem } from '../../../../shared/models/menuItem';
 
 @Component({
   selector: 'app-add-item',
@@ -66,14 +67,11 @@ export class AddItem {
       return;
     }
 
-    // converte para número em reais (centavos)
     const numericValue = parseInt(raw, 10) / 100;
 
-    // salva no formulário com ponto (19.90)
     this.form.get('price')?.setValue(numericValue.toFixed(2), { emitEvent: false });
 
-    // formata para exibir no input → R$ 19,90
-    const masked = numericValue.toFixed(2).replace('.', ','); // vírgula no input
+    const masked = numericValue.toFixed(2).replace('.', ',');
 
     event.target.value = `R$ ${masked}`;
   }
@@ -100,14 +98,36 @@ export class AddItem {
 
     const item = this.form.value;
 
-    this.itemService.newItem(item).subscribe({
-      next: () => {
-        this.form.reset();
-        this.snackBar.open('Item cadastrado com sucesso!', 'Fechar', { duration: 3000 });
+    if (!this.selectedFile) {
+      this.snackBar.open('Selecione uma imagem!', 'Fechar', { duration: 3000 });
+      return;
+    }
+
+    // upload da imagem
+    this.itemService.uploadItemImage(this.selectedFile).subscribe({
+      next: (res) => {
+        const imageUrl = res.url;
+
+        const newItem = {
+          ...item,
+          image_url: imageUrl,
+        } as MenuItem;
+
+        this.itemService.newItem(newItem).subscribe({
+          next: () => {
+            this.form.reset();
+            this.snackBar.open('Item cadastrado com sucesso!', 'Fechar', { duration: 3000 });
+          },
+          error: (err) => {
+            console.error('Erro ao criar item', err);
+            this.snackBar.open('Erro ao criar item', 'Fechar', { duration: 3000 });
+          },
+        });
       },
-      error: (err: any) => {
-        console.error('Erro ao criar item', err);
-        this.snackBar.open('Ocorreu um erro ao criar o item.', 'Fechar', { duration: 3000 });
+
+      error: (err) => {
+        console.error('Erro ao enviar imagem', err);
+        this.snackBar.open('Erro ao enviar imagem.', 'Fechar', { duration: 3000 });
       },
     });
   }

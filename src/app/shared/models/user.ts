@@ -5,5 +5,5 @@ export interface User {
     email: string;
     phone: string;
     avatar_url: string | undefined;
-    isAdmin: boolean;
+    is_admin: boolean;
 }

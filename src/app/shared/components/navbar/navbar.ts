@@ -59,4 +59,8 @@ export class Navbar {
   goToCart() {
     this.router.navigateByUrl('/cart')
   }
+
+  get isAdmin() {
+    return this.authService.user()?.is_admin;
+  }
 }
